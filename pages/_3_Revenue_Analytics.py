@@ -4,9 +4,6 @@ import mysql.connector
 import plotly.express as px
 from utils.db_connection import get_connection
 
-# ---------------------------
-# Query Functions
-# ---------------------------
 @st.cache_data
 def load_geographic_revenue():
     conn = get_connection()
@@ -27,9 +24,7 @@ def load_geographic_revenue():
     return df
 
 def app():
-    # ---------------------------
-    # Dashboard
-    # ---------------------------
+
     st.title("📊 Geographic Revenue Analysis (State + Segment)")
 
     df = load_geographic_revenue()
@@ -37,9 +32,9 @@ def app():
     st.subheader("Raw Data")
     st.dataframe(df)
 
-    # ---------------------------
+ 
     # KPI Summary (Total Revenue, Total Customers, Total Transactions)
-    # ---------------------------
+  
     total_rev = df["revenue"].sum()
     total_customers = df["unique_customers"].sum()
     total_txn = df["total_transactions"].sum()
@@ -50,9 +45,6 @@ def app():
     col2.metric("Total Customers", f"{total_customers:,}")
     col3.metric("Total Transactions", f"{total_txn:,}")
 
-    # ---------------------------
-    # FILTERS
-    # ---------------------------
     st.subheader("Filters")
     states = st.multiselect("Filter by State", df["state"].unique())
     segments = st.multiselect("Filter by Customer Segment", df["segment"].unique())
@@ -63,9 +55,9 @@ def app():
     if segments:
         filtered = filtered[filtered["segment"].isin(segments)]
 
-    # ---------------------------
+   
     # BAR CHART — Revenue by State
-    # ---------------------------
+   
     st.subheader("Revenue by State")
     fig1 = px.bar(
         filtered.groupby("state")["revenue"].sum().reset_index(),
@@ -76,9 +68,9 @@ def app():
     )
     st.plotly_chart(fig1, use_container_width=True)
 
-    # ---------------------------
+    
     # PIE CHART — Segment Contribution
-    # ---------------------------
+  
     st.subheader("Segment Contribution")
     fig2 = px.pie(
         filtered.groupby("segment")["revenue"].sum().reset_index(),
@@ -88,8 +80,8 @@ def app():
     )
     st.plotly_chart(fig2, use_container_width=True)
 
-    # ---------------------------
+ 
     # TABLE — Detailed Drilldown
-    # ---------------------------
+
     st.subheader("State + Segment Drilldown")
     st.dataframe(filtered.sort_values("revenue", ascending=False))

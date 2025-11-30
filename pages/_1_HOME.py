@@ -8,6 +8,6 @@ def app():
     - Executive Summary
     - SQL-driven analytics
     - Financial Performance
-    - github URL - https://github.com/padhma4782/Cricbuzz
+    - github URL - https://github.com/padhma4782/Amazon_Sales_Analytics
     ''')
     st.markdown('Please navigate to the sections in the sidebar.')

@@ -5,9 +5,7 @@ from utils.db_connection import get_connection
 
 st.set_page_config(page_title="Sales Strategy Dashboard", layout="wide")
 
-# -------------------------------------------
-# LOAD DATA FROM SQL
-# -------------------------------------------
+
 @st.cache_data
 def load_data():
     conn = get_connection()
@@ -38,9 +36,6 @@ def load_data():
     return df
 
 
-# -------------------------------------------
-# MAIN APP
-# -------------------------------------------
 def app():
 
     st.title("📈 Sales Forecasting & Strategic Analytics Dashboard")
@@ -49,9 +44,9 @@ def app():
 
     st.write(f"📌 Loaded **{len(df):,} transactions**")
 
-    # ========================================
-    # 1️⃣ KEY METRICS
-    # ========================================
+
+    # 1 KEY METRICS
+
     st.header("🔍 Key Sales Metrics")
 
     col1, col2, col3, col4 = st.columns(4)
@@ -66,9 +61,9 @@ def app():
     seasonal["period"] = seasonal["year"].astype(str) + "-" + seasonal["month"].astype(str)
 
 
-    # ========================================
-    # 3️⃣ SIMPLE FORECASTING (Moving Average)
-    # ========================================
+   
+    # 3️ SIMPLE FORECASTING (Moving Average)
+   
     st.subheader("📉 Forecasting with Moving Average")
 
     seasonal = seasonal.sort_values(["year", "month"])
@@ -80,9 +75,9 @@ def app():
     ax.legend()
     st.pyplot(fig)
 
-    # ========================================
-    # 4️⃣ DELIVERY PERFORMANCE
-    # ========================================
+   
+    # 4 DELIVERY PERFORMANCE
+  
     st.subheader("🚚 Delivery Performance Analysis")
 
     col1, col2 = st.columns(2)
@@ -98,17 +93,17 @@ def app():
         issue_df = df["return_status"].value_counts()
         st.bar_chart(issue_df)
 
-    # ========================================
-    # 5️⃣ PAYMENT METHOD PERFORMANCE
-    # ========================================
+   
+    #  PAYMENT METHOD PERFORMANCE
+    
     st.subheader("💳 Payment Method Preferences")
 
     pay_df = df["payment_method"].value_counts()
     st.bar_chart(pay_df)
 
-    # ========================================
-    # 6️⃣ CUSTOMER SATISFACTION & EFFECTIVENESS
-    # ========================================
+
+    # 6️ CUSTOMER SATISFACTION & EFFECTIVENESS
+    
     st.subheader("⭐ Customer Satisfaction & Recommendation Effectiveness")
 
     rating_rev = df.groupby("customer_rating")["corrected_price"].mean()
@@ -118,9 +113,9 @@ def app():
     ax.set_title("Rating vs Avg Spending")
     st.pyplot(fig)
 
-    # ========================================
-    # 7️⃣ AUTOMATED ALERTS (Rules Based)
-    # ========================================
+ 
+    # 7️ AUTOMATED ALERTS (Rules Based)
+
     st.subheader("🚨 Automated Alerts")
 
     alerts = []
@@ -135,14 +130,13 @@ def app():
         alerts.append("⚠ Drop in customer satisfaction score.")
 
     if len(alerts) == 0:
-        st.success("✅ No alerts! Performance looks healthy.")
+        st.success(" No alerts! Performance looks healthy.")
     else:
         for a in alerts:
             st.error(a)
 
-    # ========================================
-    # 8️⃣ STRATEGIC DECISION SUPPORT
-    # ========================================
+    # 8 STRATEGIC DECISION SUPPORT
+
     st.subheader("📌 Strategic Recommendations")
 
     st.write("""

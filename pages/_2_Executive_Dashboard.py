@@ -1,28 +1,22 @@
 import streamlit as st
 import pandas as pd
 from datetime import date
-from millify import millify # You need to run: pip install millify
-# Import the connection function from the main file.
-# This assumes 'streamlit_app' is the main file defining get_db_connection.
+from millify import millify 
+
 from utils.db_connection import get_connection 
 
 st.set_page_config(layout="wide")
 
 def fetch_data(conn, query, params=None):
-    """Helper function to fetch data from MySQL and return a DataFrame."""
+
     try:
-        # Uses pandas to execute the SQL query and fetch results directly
         return pd.read_sql(query, conn, params=params)
     except Exception as e:
         st.error(f"Error executing query: {e}")
         return pd.DataFrame()
 
 def get_executive_summary(conn):
-    """
-    Fetches core KPIs (Revenue, Customers, AOV) and YoY growth data by querying 
-    the dimension and fact tables.
-    """
-    # Define the current year and previous year for comparison
+
     current_year = date.today().year
     previous_year = current_year - 1
     
@@ -42,7 +36,7 @@ def get_executive_summary(conn):
     """
     
     # 2. Query to get Top Performing Categories (Lifetime Revenue)
-    # Note: Assumes a 'products' table exists with a 'category' column
+ 
     top_categories_query = """
     SELECT
         p.subcategory AS category,
@@ -60,7 +54,7 @@ def get_executive_summary(conn):
     if summary_df.empty:
         return None, None
         
-    # Python logic to calculate YoY Growth
+    # calculate YoY Growth
     cp_data = summary_df[summary_df['year'] == current_year].iloc[0] if current_year in summary_df['year'].values else None
     pp_data = summary_df[summary_df['year'] == previous_year].iloc[0] if previous_year in summary_df['year'].values else None
     
@@ -85,7 +79,7 @@ def get_executive_summary(conn):
     return kpis, categories_df
 
 def display_executive_summary():
-    """Renders the Streamlit UI for the Executive Summary."""
+
     conn = get_connection()
     if conn is None:
         st.warning("Database connection is not available. Please check the main application file for configuration errors.")
@@ -103,7 +97,7 @@ def display_executive_summary():
     # Create four columns for the KPI metrics
     col1, col2, col3, col4 = st.columns(4)
 
-    # Helper function to display KPI with growth indicator
+    # display KPI with growth indicator
     def display_kpi(col, label, value, growth_rate, unit="₹"):
         with col:
             st.metric(

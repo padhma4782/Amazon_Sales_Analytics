@@ -4,9 +4,6 @@ from utils.db_connection import get_connection
 import plotly.express as px
 
 
-# ---------------------------------------------------
-# Load Data
-# ---------------------------------------------------
 @st.cache_data
 def load_data():
     conn = get_connection()
@@ -22,9 +19,9 @@ def load_data():
     return customers, transactions
 
 
-# ---------------------------------------------------
+
 # Marketing Recommendation Logic
-# ---------------------------------------------------
+
 def generate_recommendation(row):
     if row["is_prime_member"] == 1:
         if row["avg_spend"] > 50000:
@@ -38,17 +35,16 @@ def generate_recommendation(row):
             return "Offer low-cost trial Prime membership & budget product bundles."
 
 def app():
-    # ---------------------------------------------------
+
     # Streamlit UI
-    # ---------------------------------------------------
+
     st.set_page_config(page_title="Customer Analytics Dashboard", layout="wide")
     st.title("🧑‍💼 Customer Analytics Dashboard")
 
     customers, transactions = load_data()
 
-    # ---------------------------------------------
     # Sidebar Interactive Customer Profile
-    # ---------------------------------------------
+  
     st.sidebar.header("🔍 Search Customer")
 
     selected_customer = st.sidebar.selectbox(
@@ -74,16 +70,16 @@ def app():
     else:
         st.sidebar.warning("No transaction data found.")
 
-    # ---------------------------------------------
+   
     # Main Dashboard Layout
-    # ---------------------------------------------
+  
     tab1, tab2, tab3 = st.tabs(["Prime vs Non-Prime Behavior", 
                                 "Membership Value Analysis", 
                                 "Customer Marketing Recommendations"])
 
-    # ---------------------------------------------------
+   
     # Tab 1 — PRIME VS NON-PRIME BEHAVIOR
-    # ---------------------------------------------------
+  
     with tab1:
         st.header("👑 Prime vs Non-Prime Behavior Overview")
 
@@ -114,9 +110,8 @@ def app():
 
 
 
-    # ---------------------------------------------------
     # Tab 2 — MEMBERSHIP VALUE ANALYSIS
-    # ---------------------------------------------------
+
     with tab2:
         st.header("📊 Membership Value Analysis")
 
@@ -150,9 +145,9 @@ def app():
 
 
 
-    # ---------------------------------------------------
+
     # Tab 3 — CUSTOMER TARGETED MARKETING RECOMMENDATIONS
-    # ---------------------------------------------------
+
     with tab3:
         st.header("🎯 Customer Targeted Marketing Recommendations")
 

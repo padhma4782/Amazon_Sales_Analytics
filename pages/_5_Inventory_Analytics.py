@@ -4,9 +4,6 @@ import matplotlib.pyplot as plt
 from utils.db_connection import get_connection
 
 
-# ------------------------------------
-# LOAD DATA
-# ------------------------------------
 @st.cache_data
 def load_data():
     conn = get_connection()
@@ -35,9 +32,7 @@ def load_data():
     conn.close()
     return df
 
-# ------------------------------------
-# MAIN STREAMLIT APP
-# ------------------------------------
+
 def app():
     st.set_page_config(page_title="Product Performance Dashboard",
                        layout="wide")
@@ -55,9 +50,9 @@ def app():
 
     st.sidebar.write(f"**Total Records: {len(df)}**")
 
-    # -----------------------------------------------------------------------------------
-    # 1️⃣ PRODUCT RANKING BY REVENUE
-    # -----------------------------------------------------------------------------------
+  
+    # PRODUCT RANKING BY REVENUE
+    
     st.subheader("🏆 Top Products by Revenue")
 
     revenue_df = (
@@ -77,9 +72,9 @@ def app():
     plt.xticks(rotation=45, ha="right")
     st.pyplot(fig)
 
-    # -----------------------------------------------------------------------------------
-    # 2️⃣ CATEGORY-WISE ANALYSIS
-    # -----------------------------------------------------------------------------------
+   
+    # 2️ CATEGORY-WISE ANALYSIS
+ 
     st.subheader("📂 Category-wise Revenue Analysis")
 
     cat_df = df.groupby("subcategory")["corrected_price"].sum().reset_index()
@@ -90,9 +85,9 @@ def app():
     plt.xticks(rotation=45)
     st.pyplot(fig)
 
-    # -----------------------------------------------------------------------------------
-    # 3️⃣ PRODUCT DEMAND PATTERNS (Sales Count)
-    # -----------------------------------------------------------------------------------
+  
+    #  PRODUCT DEMAND PATTERNS (Sales Count)
+   
     st.subheader("📈 Product Demand Patterns")
 
     demand_df = (
@@ -106,10 +101,10 @@ def app():
 
     st.dataframe(demand_df.head(10))
 
-    # -----------------------------------------------------------------------------------
-    # 4️⃣ SEASONAL TRENDS (Monthly & Quarterly)
-    # -----------------------------------------------------------------------------------
-    st.subheader("🗓️ Seasonal Trends (Monthly Sales)")
+    
+    #  SEASONAL TRENDS (Monthly & Quarterly)
+    
+    st.subheader(" Seasonal Trends (Monthly Sales)")
 
     seasonal_df = (
         df.groupby(["year", "month"])
@@ -125,9 +120,9 @@ def app():
     ax.set_ylabel("Revenue")
     st.pyplot(fig)
 
-    # -----------------------------------------------------------------------------------
-    # 5️⃣ INVENTORY TURNOVER (Proxy: Sales Count / Product)
-    # -----------------------------------------------------------------------------------
+    
+    # INVENTORY TURNOVER (Proxy: Sales Count / Product)
+   
     st.subheader("🔄 Inventory Turnover (Sales Frequency)")
 
     inv_df = demand_df.copy()
@@ -135,9 +130,9 @@ def app():
 
     st.dataframe(inv_df[["product_name", "turnover_score"]].head(10))
 
-    # -----------------------------------------------------------------------------------
-    # 6️⃣ DEMAND FORECASTING (Simple Moving Average)
-    # -----------------------------------------------------------------------------------
+    
+    # DEMAND FORECASTING (Simple Moving Average)
+   
     st.subheader("📉 Demand Forecasting (3-Month Moving Average)")
 
     forecast_df = seasonal_df.copy()
@@ -149,9 +144,9 @@ def app():
     ax.legend()
     st.pyplot(fig)
 
-    # -----------------------------------------------------------------------------------
-    # 7️⃣ PRODUCT RATING CORRELATION WITH SALES
-    # -----------------------------------------------------------------------------------
+    
+    # 7 PRODUCT RATING CORRELATION WITH SALES
+    
     st.subheader("⭐ Product Rating vs Sales Correlation")
 
     rating_df = df.groupby(["product_id", "product_name"]).agg(

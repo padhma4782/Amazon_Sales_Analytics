@@ -4,9 +4,6 @@ import matplotlib.pyplot as plt
 from utils.db_connection import get_connection
 
 
-# --------------------------------
-# LOAD DATA (Optimized Query)
-# --------------------------------
 @st.cache_data(show_spinner=True, ttl=1800)
 def load_ops_data():
     conn = get_connection()
@@ -35,9 +32,6 @@ def load_ops_data():
     return df
 
 
-# --------------------------------
-# MAIN FUNCTION
-# --------------------------------
 def app():
     st.title("🚚 Operations & Logistics Analytics Dashboard")
 
@@ -60,9 +54,9 @@ def app():
 
     st.sidebar.write(f"Total Records: **{len(df)}**")
 
-    # -----------------------------------------------
-    # SECTION 1 — DELIVERY PERFORMANCE
-    # -----------------------------------------------
+   
+    #  1 — DELIVERY PERFORMANCE
+    
     st.subheader("📦 Delivery Performance")
 
     col1, col2 = st.columns(2)
@@ -71,12 +65,10 @@ def app():
         on_time = df[df["return_status"] == "On Time"].shape[0]
         delayed = df[df["return_status"] == "Delayed"].shape[0]
 
-       # st.metric("On-Time Deliveries", on_time)
-       # st.metric("Delayed Deliveries", delayed)
 
     with col2:
         avg_days = df["delivery_days"].mean()
-        #st.metric("Avg Delivery Days", round(avg_days, 2))
+
 
     # Delivery Bar Chart
     del_count = df["return_status"].value_counts()
@@ -88,9 +80,9 @@ def app():
 
     st.markdown("---")
 
-    # -----------------------------------------------
-    # SECTION 2 — PAYMENT METHOD PREFERENCES
-    # -----------------------------------------------
+ 
+    #  2 — PAYMENT METHOD PREFERENCES
+
     st.subheader("💳 Payment Method Preferences")
 
     pay_df = df["payment_method"].value_counts().reset_index()
@@ -103,9 +95,9 @@ def app():
 
     st.markdown("---")
 
-    # -----------------------------------------------
-    # SECTION 3 — RETURN RATES
-    # -----------------------------------------------
+    
+    # 3 — RETURN RATES
+  
     st.subheader("🔄 Return Rate Analysis")
 
     total_orders = len(df)
@@ -124,9 +116,9 @@ def app():
 
     st.markdown("---")
 
-    # -----------------------------------------------
-    # SECTION 4 — CUSTOMER SATISFACTION SCORE (Ratings)
-    # -----------------------------------------------
+ 
+    # 4 — CUSTOMER SATISFACTION SCORE (Ratings)
+
     st.subheader("⭐ Customer Satisfaction Score")
 
     avg_rating = df["customer_rating"].mean()
@@ -142,5 +134,3 @@ def app():
 
     st.markdown("---")
 
-    # -----------------------------------------------
-    # SE
