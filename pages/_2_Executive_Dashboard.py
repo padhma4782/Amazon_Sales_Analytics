@@ -20,7 +20,7 @@ def get_executive_summary(conn):
     current_year = date.today().year
     previous_year = current_year - 1
     
-    # 1. Query to get Revenue, Customer Count, Orders, and AOV for current and previous year
+    # 1. Query to get Revenue, Customer Count, Orders, and Average order value for current and previous year
     summary_query = f"""
     SELECT
         t.year,
@@ -85,7 +85,7 @@ def display_executive_summary():
         st.warning("Database connection is not available. Please check the main application file for configuration errors.")
         return
         
-    st.header("📊 Executive Summary Dashboard (Q1)")
+    st.header("Executive Summary Dashboard (Q1)")
     st.markdown("##### Key Business Metrics with Year-over-Year Comparison")
     
     kpis, categories_df = get_executive_summary(conn)

@@ -37,7 +37,7 @@ def app():
     st.set_page_config(page_title="Product Performance Dashboard",
                        layout="wide")
 
-    st.title("📊 Product Performance Dashboard")
+    st.title("Product Performance Dashboard")
 
     df = load_data()
 
@@ -51,9 +51,9 @@ def app():
     st.sidebar.write(f"**Total Records: {len(df)}**")
 
   
-    # PRODUCT RANKING BY REVENUE
+    # Product ranking by revenue
     
-    st.subheader("🏆 Top Products by Revenue")
+    st.subheader("Top Products by Revenue")
 
     revenue_df = (
         df.groupby(["product_id", "product_name"])
@@ -73,9 +73,9 @@ def app():
     st.pyplot(fig)
 
    
-    # 2️ CATEGORY-WISE ANALYSIS
+    # 2️ Category-wise Revenue Analysis
  
-    st.subheader("📂 Category-wise Revenue Analysis")
+    st.subheader("Category-wise Revenue Analysis")
 
     cat_df = df.groupby("subcategory")["corrected_price"].sum().reset_index()
 
@@ -86,9 +86,9 @@ def app():
     st.pyplot(fig)
 
   
-    #  PRODUCT DEMAND PATTERNS (Sales Count)
+    #  Product Demand Patterns
    
-    st.subheader("📈 Product Demand Patterns")
+    st.subheader("Product Demand Patterns")
 
     demand_df = (
         df.groupby(["product_id", "product_name"])
@@ -102,7 +102,7 @@ def app():
     st.dataframe(demand_df.head(10))
 
     
-    #  SEASONAL TRENDS (Monthly & Quarterly)
+    #  Seasonal Trends (Monthly Sales)
     
     st.subheader(" Seasonal Trends (Monthly Sales)")
 
@@ -112,18 +112,23 @@ def app():
         .sum()
         .reset_index()
     )
+    seasonal_df["index_date"] = pd.to_datetime(
+    seasonal_df["year"].astype(str) + "-" + seasonal_df["month"].astype(str) + "-01"
+    )
+    seasonal_df = seasonal_df.sort_values("index_date")
+    seasonal_df = seasonal_df.set_index("index_date")
 
     fig, ax = plt.subplots(figsize=(10, 4))
-    ax.plot(seasonal_df["month"], seasonal_df["corrected_price"])
+    ax.plot(seasonal_df.index, seasonal_df["corrected_price"])
     ax.set_title("Monthly Revenue Trend")
-    ax.set_xlabel("Month")
+    ax.set_xlabel("Year-Month")
     ax.set_ylabel("Revenue")
     st.pyplot(fig)
 
     
-    # INVENTORY TURNOVER (Proxy: Sales Count / Product)
+    # Inventory Turnover (Sales Frequency)
    
-    st.subheader("🔄 Inventory Turnover (Sales Frequency)")
+    st.subheader("Inventory Turnover (Sales Frequency)")
 
     inv_df = demand_df.copy()
     inv_df["turnover_score"] = inv_df["sales_count"] / inv_df["sales_count"].max()
@@ -131,9 +136,12 @@ def app():
     st.dataframe(inv_df[["product_name", "turnover_score"]].head(10))
 
     
-    # DEMAND FORECASTING (Simple Moving Average)
+    # Demand Forecasting (3-Month Moving Average)
    
-    st.subheader("📉 Demand Forecasting (3-Month Moving Average)")
+    st.subheader("Demand Forecasting (3-Month Moving Average)")
+
+
+
 
     forecast_df = seasonal_df.copy()
     forecast_df["forecast"] = forecast_df["corrected_price"].rolling(window=3).mean()
@@ -145,9 +153,9 @@ def app():
     st.pyplot(fig)
 
     
-    # 7 PRODUCT RATING CORRELATION WITH SALES
+    # 7 Product Rating vs Sales Correlation
     
-    st.subheader("⭐ Product Rating vs Sales Correlation")
+    st.subheader("Product Rating vs Sales Correlation")
 
     rating_df = df.groupby(["product_id", "product_name"]).agg(
         avg_rating=("customer_rating", "mean"),
@@ -163,5 +171,5 @@ def app():
 
     # correlation value
     corr = rating_df["avg_rating"].corr(rating_df["total_sales"])
-    st.info(f"📌 Correlation between rating and sales: **{round(corr, 3)}**")
+    st.info(f"Correlation between rating and sales: **{round(corr, 3)}**")
 

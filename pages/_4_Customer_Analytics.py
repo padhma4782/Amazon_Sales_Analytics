@@ -39,7 +39,7 @@ def app():
     # Streamlit UI
 
     st.set_page_config(page_title="Customer Analytics Dashboard", layout="wide")
-    st.title("🧑‍💼 Customer Analytics Dashboard")
+    st.title("Customer Analytics Dashboard")
 
     customers, transactions = load_data()
 
@@ -129,20 +129,6 @@ def app():
             title="Avg Spend by Segment (Prime vs Non-Prime)"
         )
         st.plotly_chart(fig3, use_container_width=True)
-
-        # State-wise revenue
-        state_rev = transactions.groupby("state")["corrected_price"].sum().reset_index()
-
-        fig4 = px.choropleth(
-            state_rev,
-            locationmode="country names",
-            locations="state",
-            color="corrected_price",
-            title="State-wise Revenue Contribution",
-            labels={"corrected_price": "Revenue (₹)"}
-        )
-        st.plotly_chart(fig4, use_container_width=True)
-
 
 
 

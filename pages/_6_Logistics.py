@@ -33,7 +33,7 @@ def load_ops_data():
 
 
 def app():
-    st.title("🚚 Operations & Logistics Analytics Dashboard")
+    st.title("Operations & Logistics Analytics Dashboard")
 
     df = load_ops_data()
 
@@ -55,20 +55,15 @@ def app():
     st.sidebar.write(f"Total Records: **{len(df)}**")
 
    
-    #  1 — DELIVERY PERFORMANCE
+    #  1 -Delivery Performance Analysis
     
-    st.subheader("📦 Delivery Performance")
+    st.subheader("Delivery Performance")
 
-    col1, col2 = st.columns(2)
+    col1, = st.columns(1)
 
     with col1:
-        on_time = df[df["return_status"] == "On Time"].shape[0]
-        delayed = df[df["return_status"] == "Delayed"].shape[0]
-
-
-    with col2:
         avg_days = df["delivery_days"].mean()
-
+        st.metric("Avg Delivery Days", round(avg_days, 2))
 
     # Delivery Bar Chart
     del_count = df["return_status"].value_counts()
@@ -77,13 +72,21 @@ def app():
     ax.bar(del_count.index, del_count.values)
     ax.set_title("Delivery Status Distribution")
     st.pyplot(fig)
+    
 
+    st.subheader("Return Rate Analysis")
+
+    total_orders = len(df)
+    returned_orders = df[df["return_status"] == "Returned"].shape[0]
+    return_rate = (returned_orders / total_orders) * 100 if total_orders > 0 else 0
+
+    st.metric("Return Rate (%)", f"{return_rate:.2f}%")
     st.markdown("---")
 
  
-    #  2 — PAYMENT METHOD PREFERENCES
+    #  2 — Payment Method Preferences
 
-    st.subheader("💳 Payment Method Preferences")
+    st.subheader("Payment Method Preferences")
 
     pay_df = df["payment_method"].value_counts().reset_index()
     pay_df.columns = ["payment_method", "count"]
@@ -96,30 +99,11 @@ def app():
     st.markdown("---")
 
     
-    # 3 — RETURN RATES
-  
-    st.subheader("🔄 Return Rate Analysis")
-
-    total_orders = len(df)
-    returned_orders = df[df["return_status"] == "Returned"].shape[0]
-    return_rate = (returned_orders / total_orders) * 100 if total_orders > 0 else 0
-
-    st.metric("Return Rate (%)", f"{return_rate:.2f}%")
-
-    # Return Status Chart
-    return_df = df["return_status"].value_counts()
-
-    fig, ax = plt.subplots(figsize=(6, 4))
-    ax.bar(return_df.index, return_df.values)
-    ax.set_title("Return Status Distribution")
-    st.pyplot(fig)
-
-    st.markdown("---")
 
  
-    # 4 — CUSTOMER SATISFACTION SCORE (Ratings)
+    # 3 — Customer Satisfaction Score
 
-    st.subheader("⭐ Customer Satisfaction Score")
+    st.subheader("Customer Satisfaction Score")
 
     avg_rating = df["customer_rating"].mean()
     st.metric("Average Rating", round(avg_rating, 2))

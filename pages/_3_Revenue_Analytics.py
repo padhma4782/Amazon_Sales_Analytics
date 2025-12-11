@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-import mysql.connector
 import plotly.express as px
 from utils.db_connection import get_connection
 
@@ -25,7 +24,7 @@ def load_geographic_revenue():
 
 def app():
 
-    st.title("📊 Geographic Revenue Analysis (State + Segment)")
+    st.title("Geographic Revenue Analysis (State + Segment)")
 
     df = load_geographic_revenue()
 

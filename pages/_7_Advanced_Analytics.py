@@ -2,8 +2,9 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 from utils.db_connection import get_connection
+from millify import millify
 
-st.set_page_config(page_title="Sales Strategy Dashboard", layout="wide")
+st.set_page_config(page_title="Advanced Analytics", layout="wide")
 
 
 @st.cache_data
@@ -38,47 +39,30 @@ def load_data():
 
 def app():
 
-    st.title("📈 Sales Forecasting & Strategic Analytics Dashboard")
+    st.title("Advanced Analytics Dashboard")
 
     df = load_data()
 
-    st.write(f"📌 Loaded **{len(df):,} transactions**")
+    # 1 Key Sales Metrics
 
-
-    # 1 KEY METRICS
-
-    st.header("🔍 Key Sales Metrics")
+    st.header("Key Sales Metrics")
+    total_revenue = df['corrected_price'].sum()
+    readable_rev = millify(total_revenue, precision=2)
 
     col1, col2, col3, col4 = st.columns(4)
-    col1.metric("Total Revenue", f"₹{df['corrected_price'].sum():,.0f}")
+    col1.metric("Total Revenue", f"₹{readable_rev}")
     col2.metric("Avg Delivery Days", round(df["delivery_days"].mean(), 2))
     col3.metric("Return Rate (%)", round((df["return_status"] == "Returned").mean() * 100, 2))
     col4.metric("Avg Customer Rating", round(df["customer_rating"].mean(), 2))
 
-    st.subheader("🗓 Seasonal Revenue Pattern")
 
     seasonal = df.groupby(["year", "month"])["corrected_price"].sum().reset_index()
     seasonal["period"] = seasonal["year"].astype(str) + "-" + seasonal["month"].astype(str)
 
-
    
-    # 3️ SIMPLE FORECASTING (Moving Average)
-   
-    st.subheader("📉 Forecasting with Moving Average")
-
-    seasonal = seasonal.sort_values(["year", "month"])
-    seasonal["forecast"] = seasonal["corrected_price"].rolling(3).mean()
-
-    fig, ax = plt.subplots(figsize=(12, 4))
-    ax.plot(seasonal["corrected_price"], label="Actual")
-    ax.plot(seasonal["forecast"], label="3-Month Forecast")
-    ax.legend()
-    st.pyplot(fig)
-
-   
-    # 4 DELIVERY PERFORMANCE
+    # 3 Delivery Performance Analysis
   
-    st.subheader("🚚 Delivery Performance Analysis")
+    st.subheader("Delivery Performance Analysis")
 
     col1, col2 = st.columns(2)
 
@@ -96,15 +80,15 @@ def app():
    
     #  PAYMENT METHOD PERFORMANCE
     
-    st.subheader("💳 Payment Method Preferences")
+    st.subheader("Payment Method Preferences")
 
     pay_df = df["payment_method"].value_counts()
     st.bar_chart(pay_df)
 
 
-    # 6️ CUSTOMER SATISFACTION & EFFECTIVENESS
+    # Customer Satisfaction & Recommendation Effectiveness
     
-    st.subheader("⭐ Customer Satisfaction & Recommendation Effectiveness")
+    st.subheader("Customer Satisfaction & Recommendation Effectiveness")
 
     rating_rev = df.groupby("customer_rating")["corrected_price"].mean()
 
@@ -114,9 +98,9 @@ def app():
     st.pyplot(fig)
 
  
-    # 7️ AUTOMATED ALERTS (Rules Based)
+    # Automated Alerts
 
-    st.subheader("🚨 Automated Alerts")
+    st.subheader("Automated Alerts")
 
     alerts = []
 
@@ -135,9 +119,9 @@ def app():
         for a in alerts:
             st.error(a)
 
-    # 8 STRATEGIC DECISION SUPPORT
+    # Strategic Recommendations
 
-    st.subheader("📌 Strategic Recommendations")
+    st.subheader("Strategic Recommendations")
 
     st.write("""
     - Increase warehouse capacity in high-delay regions  
